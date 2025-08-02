@@ -16,7 +16,8 @@ namespace Product.Infra.Repository
         public async Task<int> AddAsync(Domain.Product product)
         {
             await _productDbContext.Products.AddAsync(product);
-            return await _productDbContext.SaveChangesAsync();
+            await _productDbContext.SaveChangesAsync();
+            return product.Id;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -28,14 +29,15 @@ namespace Product.Infra.Repository
 
             productToDelete.IsActive = false;
             _productDbContext.Update(productToDelete);
+
             await _productDbContext.SaveChangesAsync();
 
             return true;
         }
 
-        public IEnumerable<Domain.Product> GetAll()
+        public async Task<IEnumerable<Domain.Product>> GetAllAsync()
         {
-            var products = _productDbContext.Products.Where(x => x.IsActive).ToList();
+            var products = await _productDbContext.Products.Where(x => x.IsActive).ToListAsync();
             return products;
         }
 
@@ -47,15 +49,15 @@ namespace Product.Infra.Repository
 
         public async Task<Domain.Product> UpdateAsync(Domain.Product product)
         {
-            var productToUpdate = await _productDbContext.Products.FirstOrDefaultAsync(x => x.IsActive && x.Id == product.Id);
+            var existsProduct = await _productDbContext.Products.AnyAsync(x => x.IsActive && x.Id == product.Id);
 
-            if (productToUpdate is null)
+            if (!existsProduct)
                 throw new ApplicationException($"Don't exists a product to id: {product.Id}");
 
-            _productDbContext.Products.Update(productToUpdate);
+            _productDbContext.Products.Update(product);
             await _productDbContext.SaveChangesAsync();
 
-            return productToUpdate;
+            return product;
         }
     }
 }

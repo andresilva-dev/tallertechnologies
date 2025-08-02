@@ -7,5 +7,6 @@ namespace Product.Infra.Context
         public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options) { } 
         
         public DbSet<Domain.Product> Products { get; set; }
+        public DbSet<Domain.User> Users { get; set; }
     }
 }
