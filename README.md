@@ -9,7 +9,7 @@ JWT authentication has been implemented with User Role submitted via Bearer Toke
 
 To test the application, it's necessary to register a user first. At this moment, the token will be returned. If needed, the token can also be obtained via login.
 
-All endpoints can only be consumed using the token.
+All products endpoints can only be consumed using the token.
 
 ### Soft Delete Implementation
 
